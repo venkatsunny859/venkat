@@ -1,1 +1,59 @@
+# Define the structure of the inventory system
+class Product:
+    def __init__(self, name, sku, price, stock_level):
+        self.name = name
+        self.sku = sku
+        self.price = price
+        self.stock_level = stock_level
+        self.sold_units = 0
+        self.optimal_stock_level = 0
 
+class Warehouse:
+    def __init__(self, location, products):
+        self.location = location
+        self.products = products
+
+def track_inventory(product, threshold):
+    if product.stock_level < threshold:
+        print(f"Alert: {product.name} stock level is below threshold!")
+
+def calculate_reorder_point(product, lead_time, demand_forecast):
+    reorder_point = lead_time * demand_forecast
+    product.optimal_stock_level = reorder_point
+    return reorder_point
+
+def generate_reports(inventory):
+    for product in inventory:
+        turnover_rate = product.sold_units / product.stock_level
+        if product.stock_level == 0:
+            print(f"Stockout: {product.name}")
+        elif product.stock_level > product.optimal_stock_level:
+            print(f"Overstock: {product.name}")
+
+def user_interaction(inventory, product_id):
+    for product in inventory:
+        if product.sku == product_id:
+            print(f"Product: {product.name}")
+            print(f"Stock Level: {product.stock_level}")
+            print(f"Reorder Point: {product.optimal_stock_level}")
+
+# Example usage
+product1 = Product("Product A", "SKU001", 10.99, 50)
+product2 = Product("Product B", "SKU002", 15.99, 20)
+product3 = Product("Product C", "SKU003", 8.99, 30)
+
+warehouse = Warehouse("Warehouse A", [product1, product2, product3])
+
+# Track inventory
+track_inventory(product1, 20)
+track_inventory(product2, 10)
+
+# Calculate reorder point
+reorder_point1 = calculate_reorder_point(product1, 2, 10)
+reorder_point2 = calculate_reorder_point(product2, 1, 5)
+
+# Generate reports
+generate_reports(warehouse.products)
+
+# User interaction
+user_interaction(warehouse.products, "SKU002")
